@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   vec3_utils3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/06 13:04:49 by smoroz            #+#    #+#             */
-/*   Updated: 2024/06/06 13:18:06 by smoroz           ###   ########.fr       */
+/*   Created: 2024/07/26 18:24:53 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/26 18:26:56 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/lexer.h"
+#include "../../includes/vec3.h"
 
-static void	lexer_init(char *s, t_lexer_data *data)
+int	vec3_near_zero(t_vec3 *v)
 {
-	data->s = s;
-	data->i = 0;
-	data->had_error = 0;
-	data->current_char = NULL;
-	if (s)
-		data->current_char = *s;
+	double	tol;
+
+	tol = 1.0e-8;
+	return (fabs(v->x) < tol && fabs(v->y) < tol && fabs(v->z) < tol);
 }
 
-void	advance(t_lexer_data *data)
+void	vec3_reflect(t_vec3 *v, t_vec3 normal, t_vec3 *dest)
 {
+	double	dot2;
 
-}
-
-t_list	*lexer(char *line)
-{
-	t_lexer_data	data;
-	t_list			*tokens;
-
-	tokens = NULL;
-	lexer_init(line, &data);
+	dot2 = 2.0 * vec3_dot(v, &normal);
+	vec3_mult_const(&normal, dot2);
+	vec3_substract(v, &normal, dest);
 }

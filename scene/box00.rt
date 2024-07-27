@@ -1,0 +1,43 @@
+#
+#	LIGHT
+#	position [x,y,z]
+#	intencity
+#	color [r,g,b]
+L   0.0,0.0,0.0   0.1   255,255,255
+
+#	AMBIENT
+#	intencity
+#	color [r,g,b]
+A   1.0   127,178,255
+
+# CAMERA
+#	position [x,y,z]
+#	3d normalized orientation vector [x,y,z]
+#	field of view [deg]
+C   0.0,0.0,4.0   0.0,0.0,1.0   60
+
+#	PLANE
+#	position [x,y,z]
+#	normal [x,y,z]
+#	color [r,g,b]
+pl   0.0,-1.0,0.0      0.0,1.0,0.0      186,186,186
+pl   0.0,1.0,0.0      0.0,-1.0,0.0      186,186,186
+pl   0.0,0.0,-5.0      0.0,0.0,1.0      186,186,186
+pl   -2.0,0.0,0.0      1.0,0.0,0.0      165,12,12
+pl   2.0,0.0,0.0      -1.0,0.0,0.0      30,115,38
+
+#	CYLINDER
+#	position [x,y,z]
+#	normal [x,y,z]
+#	diameter
+#	height
+#	color [r,g,b]
+cy   -1.0,-1.0,0.0       0.0,1.0,0.0   0.25   2.0   255,204,51
+
+#	SPHERE
+#	position [x,y,z]
+#	diameter
+#	color [r,g,b]
+sp   1.0,0.0,0.0   0.50   255,0,0
+sp   1.0,0.5,0.0   0.250   255,255,0
+sp   1.0,-0.5,0.0   0.250   255,0,255

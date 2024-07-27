@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.h                                            :+:      :+:    :+:   */
+/*   vec3_utils1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/06 12:53:50 by smoroz            #+#    #+#             */
-/*   Updated: 2024/06/06 13:16:49 by smoroz           ###   ########.fr       */
+/*   Created: 2024/07/26 18:24:53 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/26 18:31:18 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEXER_H
-# define LEXER_H
+#include "../../includes/vec3.h"
 
-#include "../libft/libft.h"
-
-# define POINT 1
-# define SPACE 2
-# define DIGIT 3
-# define ALPHA 4
-
-typedef struct s_lexer_data
+double	vec3_length_squared(t_vec3 *v)
 {
-	char	*s;
-	int		i;
-	char	current_char;
-	int		had_error;
-}			t_lexer_data;
+	return (v->x * v->x + v->y * v->y + v->z * v->z);
+}
 
-#endif
+double	vec3_length(t_vec3 *v)
+{
+	return (sqrt(vec3_length_squared(v)));
+}
+
+double	vec3_dot(t_vec3 *u, t_vec3	*v)
+{
+	return (u->x * v->x + u->y * v->y + u->z * v->z);
+}
+
+void	vec3_mult_const(t_vec3 *v, double t)
+{
+	v->x *= t;
+	v->y *= t;
+	v->z *= t;
+}

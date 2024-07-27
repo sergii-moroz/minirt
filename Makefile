@@ -17,12 +17,21 @@ LIBS			=	-L$(MLX_DIR) -l$(MLX) -framework OpenGL -framework AppKit \
 
 INC			=	-I includes
 
-SRC_DIRS	=	src src/app src/hilbert_curve src/common
+SRC_DIRS	=	src src/app src/hilbert_curve src/common src/parser \
+				src/vec3 src/ray src/geometry src/interval src/scene
 vpath			%.c $(SRC_DIRS)
 
-SRCS			=	main.c app.c hooks.c update.c hilbert_curve.c \
-					color.c error.c \
-					utils_check_input.c
+SRCS			=	main.c app.c hooks.c update.c \
+					vec3.c vec3_utils1.c vec3_utils2.c vec3_utils3.c \
+					vec3_random.c \
+					camera.c camera_init.c camera_ray.c camera_shade.c \
+					ray.c sphere.c interval.c \
+					scene.c scene_print.c cylinder.c \
+					plane.c plane_hit.c \
+					color.c error.c random.c \
+					parser.c parser_set.c parser_set_geoms.c \
+					parser_set_cylinder.c parser_utils.c validation.c
+
 
 OBJS_DIR	=	obj
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
@@ -55,16 +64,16 @@ fclean:		clean
 			cd $(LIBFT_DIR) && $(MAKE) fclean
 			$(RM) $(NAME)
 			$(RM) $(MLX_DIR)
-#			cd ./
 
 re:			fclean all
 
-run:		all
-			./miniRT aaa
+run:		clean all
+			./miniRT ./scene/scene.rt
 
-crun:		clean run
+test:		clean all
+			./miniRT ./scene/test00.rt
 
 info:
 	git diff --numstat | awk '{added += $$1; deleted += $$2} END {print added - deleted}'
 
-.PHONY: all clean fclean re run frun
+.PHONY: all clean fclean re run test

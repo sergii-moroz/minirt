@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt.h                                           :+:      :+:    :+:   */
+/*   interval.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/27 14:02:37 by smoroz            #+#    #+#             */
-/*   Updated: 2024/07/27 14:02:42 by smoroz           ###   ########.fr       */
+/*   Created: 2024/07/11 09:11:30 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/11 09:56:27 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIRT_H
-# define MINIRT_H
+#ifndef INTERVAL_H
+# define INTERVAL_H
 
-# include <stdlib.h>
 # include <stdio.h>
-# include "app.h"
-# include "parser.h"
+# include "common.h"
 
-// utils_check_input.c
-void	check_input(char *str);
+typedef struct s_interval
+{
+	double	min;
+	double	max;
+	int		(*surrounds)(struct s_interval *, double);
+	int		(*contains)(struct s_interval *, double);
+	void	(*print)(struct s_interval *);
+	void	(*create)(struct s_interval *, double, double);
+}			t_interval;
+
+void	ray_interval_bind(t_interval *interval);
 
 #endif

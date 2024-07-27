@@ -6,31 +6,37 @@
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 15:16:03 by smoroz            #+#    #+#             */
-/*   Updated: 2024/06/06 13:32:55 by smoroz           ###   ########.fr       */
+/*   Updated: 2024/07/26 15:34:38 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minirt.h"
 
+void	check_leaks(void)
+{
+	system("leaks miniRT");
+}
+
 int	main(int argc, char **argv)
 {
-	char	**s;
 	t_app	app;
+	t_scene	scene;
 
-	s = argv;
-	if (argc == 1)
+	atexit(check_leaks);
+	if (!is_args_valid(argc, argv))
+		return (EXIT_FAILURE);
+	// else
+	// 	printf(GREEN"Args is valid!\n"RESET);
+	if (!is_parse_ok(argv[1], &scene))
 	{
-		printf("ERROR: Scene description file isn't specified\n");
-		exit(EXIT_FAILURE);
+		scene_free(&scene);
+		return (EXIT_FAILURE);
 	}
-	else if (argc > 2)
-	{
-		printf("ERROR: Too many arguments\n");
-		exit(EXIT_FAILURE);
-	}
-	printf("file_name: \"%s\"\n", argv[1]);
-	check_input(argv[1]);
+	// else
+	// 	printf(GREEN"Scene is valid!\n"RESET);
+	app.scene = scene;
 	app_init(&app);
 	mlx_loop(app.mlx);
+	scene_free(&app.scene);
 	return (EXIT_SUCCESS);
 }

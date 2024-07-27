@@ -1,9 +1,0 @@
-minilibx
-minilibx/*.o
-obj
-miniRT
-*.a
-*.o
-*.pdf
-.vscode
-*.txt
