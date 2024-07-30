@@ -1,0 +1,296 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_mrz.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/28 13:46:39 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/29 19:41:51 by smoroz           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/parser2.h"
+
+typedef struct s_split
+{
+	int	words;
+	int	word_start;
+	int	word_end;
+}		t_split_data;
+
+/*int	ft_isseparator(char const *s, char const *sep)
+{
+	while (*sep)
+	{
+		if (*sep == *s)
+			return (1);
+		sep++;
+	}
+	return (0);
+}*/
+
+int	ft_find_word_start(char const *s)
+{
+	int	i;
+
+	i = 0;
+	while (*(s + i) && ft_isspace(*(s + i)))
+		i++;
+	return (i);
+}
+
+int	ft_find_word_end(char const *s)
+{
+	int	i;
+
+	i = 0;
+	while (*(s + i) && !ft_isspace(*(s + i)))
+		i++;
+	return (i);
+}
+
+int	ft_count_words_by_space(char const *s)
+{
+	int	i;
+	int	len;
+	int	count;
+
+	len = ft_strlen(s);
+	count = 0;
+	i = 0;
+	while (i < len)
+	{
+		i += ft_find_word_start(s + i);
+		if (i < len)
+		{
+			count++;
+			i += ft_find_word_end(s + i);
+		}
+	}
+	return (count);
+}
+
+/*char	**ft_cleanup(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (*(arr + i))
+	{
+		free(*(arr + i));
+		i++;
+	}
+	free(arr);
+	arr = NULL;
+	return (arr);
+}*/
+
+char	**ft_split_by_space(char const *s)
+{
+	char	**arr;
+	int		i;
+	int		t[3];
+
+	t[0] = ft_count_words_by_space(s);
+	arr = malloc((t[0] + 1) * sizeof(char *));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	t[2] = 0;
+	while(t[2] < t[0])
+	{
+		i += ft_find_word_start(s + i);
+		if (i < ft_strlen(s))
+		{
+			t[1] = ft_find_word_end(s + i);
+			*(arr + t[2]) = ft_substr(s, i, t[1]);
+			if (!*(arr + t[2]))
+				return (ft_cleanup(arr));
+			i += t[1];
+		}
+		t[2]++;
+	}
+	*(arr + t[2]) = NULL;
+	return (arr);
+}
+
+void	ft_split_print(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (*(arr + i))
+	{
+		printf("%d: ===%s===\n", i, *(arr + i));
+		i++;
+	}
+}
+
+void	parse_integer(char *s, double *val, t_scene *scene)
+{
+	int	rgb;
+
+	if (scene->had_error)
+		return ;
+	if (ft_isvalid_int(s))
+	{
+		rgb = ft_atoi(s);
+		if (rgb >= 0 && rgb <= 255)
+			*val = (double)rgb / 255.0;
+		else
+		{
+			scene->had_error = 1;
+			printf("ERROR:\n");
+			printf("\t|| line: \"%s\"\n", s);
+			printf("\t|| color value should be in range [0-255]\n");
+		}
+	}
+	else
+	{
+		scene->had_error = 1;
+		printf("ERROR: %s is not a valid integer.\n", s);
+	}
+}
+
+void	parse_double(char *s, double *val, t_scene *scene)
+{
+	if (scene->had_error)
+		return ;
+	if (ft_isvalid_float(s))
+	{
+		*val = ft_atof(s);
+		// printf("string: %s, value: %f\n", s, val);
+	}
+	else
+	{
+		scene->had_error = 1;
+		printf("ERROR: %s is not a valid float.\n", s);
+	}
+}
+
+void	parse_position(char *s, t_vec3 *pos, t_scene *scene)
+{
+	char	**groups;
+	int		count;
+
+	if (scene->had_error)
+		return ;
+	count = ft_count_words(s, ',');
+	if (count != 3)
+	{
+		printf("ERROR:\n");
+		printf("\t|| position definition should have THREE coordinates. got %d.\n", count);
+		printf("\t|| position: x,y,z\n");
+		printf("\t|| check the line: %s\n", s);
+		return ;
+	}
+	groups = ft_split(s, ',');
+	printf("===START: parse position===\n");
+	printf("string: %s\n", s);
+	// ft_split_print(groups);
+	parse_double(*groups, &pos->x, scene);
+	parse_double(*(groups + 1), &pos->y, scene);
+	parse_double(*(groups + 2), &pos->z, scene);
+	printf("===END: parse position===\n");
+	ft_cleanup(groups);
+}
+
+void	parse_color(char *s, t_color3 *color, t_scene *scene)
+{
+	char	**groups;
+	int		count;
+
+	if (scene->had_error)
+		return ;
+	count = ft_count_words(s, ',');
+	if (count != 3)
+	{
+		printf("ERROR:\n");
+		printf("\t|| color definition should have THREE integer value. got %d.\n", count);
+		printf("\t|| check the line: %s\n", s);
+		return ;
+	}
+	groups = ft_split(s, ',');
+	// printf("===START: parse color===\n");
+	// printf("string: %s\n", s);
+	ft_split_print(groups);
+	parse_integer(*groups, &color->x, scene);
+	parse_integer(*(groups + 1), &color->y, scene);
+	parse_integer(*(groups + 2), &color->z, scene);
+	// printf("===END: parse color===\n");
+	ft_cleanup(groups);
+}
+
+void	parse_radius(char *s, double *val, t_scene *scene)
+{
+	if (scene->had_error)
+		return ;
+	if (ft_isvalid_float(s))
+	{
+		*val = ft_atof(s) / 2.0;
+		// printf("string: %s, radius: %f\n", s, *val);
+	}
+	else
+	{
+		scene->had_error = 1;
+		printf("ERROR: %s is not a valid float.\n", s);
+	}
+}
+
+void	set_sphere(char *s, t_scene *scene)
+{
+	int		count;
+	char	**groups;
+	t_sphere	*sp;
+	t_geom		*geom;
+
+	if (scene->had_error)
+		return ;
+	count = ft_count_words_by_space(s);
+	if (count != 3)
+	{
+		scene->had_error = 1;
+		printf("ERROR:\n");
+		printf("\t|| line: \"%s\"\n", s);
+		printf("\t|| The sphere's definition should have THREE groups of parameters.\n");
+		printf("\t|| {position} {diameter} {colors}\n");
+		printf("\t|| Given: %d.\n", count);
+		return ;
+	}
+	groups = ft_split_by_space(s);
+	sp = malloc(sizeof(t_sphere)); //TD: change to ft_malloc
+	if (!sp)
+		return ;
+	parse_position(*groups, &sp->center, scene);
+	parse_radius(*(groups + 1), &sp->radius, scene);
+	parse_color(*(groups + 2), &sp->color, scene);
+	ft_cleanup(groups);
+	geom = malloc(sizeof(t_geom)); //TD replace ft_malloc
+	if (!geom)
+	{
+		free(sp);
+		return ;
+	}
+	geom->type = G_SPHERE;
+	geom->data = sp;
+	scene_add_geom(scene, geom);
+	scene_print(scene);
+}
+
+
+int	main(int argc, char **argv)
+{
+	char	**arr;
+	t_scene	scene;
+
+	ft_memset(&scene, 0, sizeof(t_scene));
+	if (argc != 2)
+		return (1);
+	// arr = ft_split_by_space(argv[1]);
+	// printf("count: %d\n", ft_count_words(argv[1]));
+	// ft_split_print(arr);
+	// ft_cleanup(arr);
+	set_sphere(argv[1], &scene);
+	return (0);
+}

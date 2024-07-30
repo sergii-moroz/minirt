@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_set_cylinder.c                              :+:      :+:    :+:   */
+/*   parser_cylinder.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/26 17:10:59 by smoroz            #+#    #+#             */
-/*   Updated: 2024/07/26 17:19:07 by smoroz           ###   ########.fr       */
+/*   Created: 2024/07/30 12:22:25 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/30 15:58:26 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,10 @@ static void	add_cylinder(t_scene *sc, t_cylinder *cy)
 	t_geom	*geom;
 
 	if (sc->had_error)
+	{
+		free(cy);
 		return ;
+	}
 	geom = ft_malloc(sizeof(t_geom), sc);
 	if (!geom)
 	{
@@ -85,28 +88,45 @@ static void	add_cylinder(t_scene *sc, t_cylinder *cy)
 	scene_add_cydisk2(sc, cy);
 }
 
-void	set_cylinder(char *line, t_scene *sc)
+static void	set_cylinder(char *s, t_scene *scene)
 {
-	float		tmp_f;
-	int			i;
 	t_cylinder	*cy;
+	char		**groups;
 
-	if (sc->had_error)
+	if (scene->had_error)
 		return ;
-	cy = ft_malloc(sizeof(t_cylinder), sc);
+	groups = ft_split_by_space(s);
+	cy = ft_malloc(sizeof(t_cylinder), scene);
 	if (!cy)
 		return ;
-	i = 0;
-	triple_float_handler(line, &cy->pivot, &i);
-	i = get_next_digit(line, i);
-	triple_float_handler(line, &cy->axis, &i);
-	i = get_next_digit(line, i);
-	tmp_f = ft_atof(line + i, &i);
-	cy->radius = (double)tmp_f / 2;
-	i = get_next_digit(line, i);
-	tmp_f = ft_atof(line + i, &i);
-	cy->height = (double)tmp_f;
-	i = get_next_digit(line, i);
-	triple_int_handler(line, &cy->color, &i);
-	add_cylinder(sc, cy);
+	parse_position(*groups, &cy->pivot, scene);
+	parse_normals(*(groups + 1), &cy->axis, scene);
+	parse_radius(*(groups + 2), &cy->radius, scene);
+	parse_height(*(groups + 3), &cy->height, scene);
+	parse_color(*(groups + 4), &cy->color, scene);
+	ft_cleanup(groups);
+	add_cylinder(scene, cy);
+}
+
+void	parse_cylinder(char *s, t_scene *scene)
+{
+	int	count;
+
+	if (scene->had_error)
+		return ;
+	count = ft_count_words_by_space(s);
+	if (count != 5)
+	{
+		scene->had_error = 1;
+		printf(RED"ERROR:\n"RESET);
+		printf(RED"\t|| "YELLOW"line: \""RESET);
+		printf(BLACK"%.*s"YELLOW"\"\n"RESET, (int)ft_strlen(s) - 1, s);
+		printf(RED"\t||\n\t|| "CYAN"The cylinder's definition should "RESET);
+		printf(CYAN"have FIVE spaces separated groups of parameters.\n"RESET);
+		printf(RED"\t|| "CYAN"{position} {orientation} {diameter} "RESET);
+		printf(CYAN"{height} {color}.\n"RESET);
+		printf(RED"\t|| "CYAN"Only "RED"%d"CYAN" were found.\n"RESET, count);
+		return ;
+	}
+	set_cylinder(s, scene);
 }

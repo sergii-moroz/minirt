@@ -17,7 +17,7 @@ LIBS			=	-L$(MLX_DIR) -l$(MLX) -framework OpenGL -framework AppKit \
 
 INC			=	-I includes
 
-SRC_DIRS	=	src src/app src/hilbert_curve src/common src/parser \
+SRC_DIRS	=	src src/app src/common src/parser \
 				src/vec3 src/ray src/geometry src/interval src/scene
 vpath			%.c $(SRC_DIRS)
 
@@ -29,9 +29,11 @@ SRCS			=	main.c app.c hooks.c update.c \
 					scene.c scene_print.c cylinder.c \
 					plane.c plane_hit.c \
 					color.c error.c random.c \
-					parser.c parser_set.c parser_set_geoms.c \
-					parser_set_cylinder.c parser_utils.c validation.c
-
+					parser.c validation.c \
+					split_by_space.c parser_errors.c \
+					parser_utils.c parser_utils2.c \
+					parser_plane.c parser_sphere.c parser_cylinder.c \
+					parser_camera.c parser_ambient.c parser_light.c
 
 OBJS_DIR	=	obj
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
@@ -71,7 +73,7 @@ run:		clean all
 			./miniRT ./scene/scene.rt
 
 test:		clean all
-			./miniRT ./scene/test00.rt
+			./miniRT ./scene/test01.rt
 
 info:
 	git diff --numstat | awk '{added += $$1; deleted += $$2} END {print added - deleted}'

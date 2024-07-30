@@ -5,46 +5,55 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/18 15:59:01 by olanokhi          #+#    #+#             */
-/*   Updated: 2024/07/25 12:55:49 by smoroz           ###   ########.fr       */
+/*   Created: 2024/01/10 16:43:53 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/30 16:10:31 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_atof_init(t_ft_atof *atof)
+static double	ft_fract(char *s)
 {
-	atof->fract = 0;
-	atof->div = 1;
-	atof->sign = 1;
-	atof->i = 0;
-	atof->res = 0;
+	double	fract;
+	double	pow;
+
+	fract = 0.0;
+	s = ft_strchr(s, '.');
+	if (s == NULL)
+		return (fract);
+	s++;
+	pow = 1.0;
+	while (*s >= '0' && *s <= '9')
+	{
+		pow /= 10.0;
+		fract = fract + (*s - '0') * pow;
+		s++;
+	}
+	return (fract);
 }
 
-float	ft_atof(char *str, int *len)
+double	ft_atof(char *s)
 {
-	t_ft_atof		atof;
+	double	frac_part;
+	long	int_part;
+	int		sign;
 
-	ft_atof_init(&atof);
-	while (ft_isspace(str[atof.i]))
-		atof.i++;
-	if (str[atof.i] == '-')
-		atof.sign = -1;
-	if (str[atof.i] == '+' || str[atof.i] == '-')
-		atof.i++;
-	while (ft_isdigit(str[atof.i]))
+	int_part = 0;
+	frac_part = 0.0;
+	sign = 1;
+	while (ft_isspace(*s))
+		s++;
+	if (*s == '+' || *s == '-')
 	{
-		atof.res = atof.res * 10 + str[atof.i] - '0';
-		atof.i++;
+		if (*s == '-')
+			sign = -1;
+		s++;
 	}
-	if (str[atof.i] == '.')
-		atof.i++;
-	while (ft_isdigit(str[atof.i]))
+	while (*s >= '0' && *s <= '9')
 	{
-		atof.fract = atof.fract * 10 + str[atof.i] - '0';
-		atof.div *= 10;
-		atof.i++;
+		int_part = int_part * 10 + *s - '0';
+		s++;
 	}
-	atof.res = atof.res + atof.fract / atof.div;
-	return (*len += atof.i, atof.res * atof.sign);
+	frac_part = ft_fract(s);
+	return (sign * (int_part + frac_part));
 }

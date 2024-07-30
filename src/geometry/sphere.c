@@ -6,7 +6,7 @@
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 16:11:07 by smoroz            #+#    #+#             */
-/*   Updated: 2024/07/26 19:32:34 by smoroz           ###   ########.fr       */
+/*   Updated: 2024/07/30 14:55:21 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	sphere_print(void *sp)
 
 	sphere = (t_sphere *)sp;
 	printf(YELLOW"SPHERE: {\n");
+	printf(CYAN"  radius: "BLACK"%f\n", sphere->radius);
 	vec3_print(&sphere->center, "center");
-	printf(MAGENTA"  radius: "BLACK"%f\n", sphere->radius);
 	vec3_print(&sphere->color, "color");
 	printf(YELLOW"}\n"RESET);
 }

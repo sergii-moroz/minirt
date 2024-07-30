@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hilbert_curve.h                                    :+:      :+:    :+:   */
+/*   ft_isvalid_int.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/05 13:39:42 by smoroz            #+#    #+#             */
-/*   Updated: 2024/06/05 14:03:34 by smoroz           ###   ########.fr       */
+/*   Created: 2024/01/11 20:29:32 by smoroz            #+#    #+#             */
+/*   Updated: 2024/07/29 14:30:50 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HILBERT_CURVE_H
-# define HILBERT_CURVE_H
+#include "libft.h"
 
-typedef struct s_int_point
+int	ft_isvalid_int(const char *str)
 {
-	int	x;
-	int	y;
-}		t_int_point;
-
-// hilbert_curve.c
-t_int_point	hindex2xy(int hindex, int order);
-
-#endif
+	if (ft_strlen(str) == 0)
+		return (0);
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '\0')
+		return (0);
+	if (*str == '-' || *str == '+')
+		str++;
+	if (*str == '\0')
+		return (0);
+	while (ft_isdigit(*str))
+		str++;
+	if (*str == '\0')
+		return (1);
+	return (0);
+}

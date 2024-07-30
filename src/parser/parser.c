@@ -6,7 +6,7 @@
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 17:15:05 by olanokhi          #+#    #+#             */
-/*   Updated: 2024/07/26 16:13:13 by smoroz           ###   ########.fr       */
+/*   Updated: 2024/07/30 15:55:27 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,30 @@ static void	set_scene(char *line, t_scene *scene)
 	char	*trimed_line;
 
 	trimed_line = skip_spaces(line);
-	if (ft_strncmp(trimed_line, "A ", 2) == 0)
-		set_ambient(trimed_line + 2, &scene->ambient);
-	if (ft_strncmp(trimed_line, "C ", 2) == 0)
-		set_camera(trimed_line + 2, &scene->camera);
-	if (ft_strncmp(trimed_line, "L ", 2) == 0)
-		set_light(trimed_line + 2, &scene->light);
-	if (ft_strncmp(trimed_line, "pl ", 3) == 0)
-		set_plane(trimed_line + 3, scene);
-	if (ft_strncmp(trimed_line, "sp ", 3) == 0)
-		set_sphere(trimed_line + 3, scene);
-	if (ft_strncmp(trimed_line, "cy ", 3) == 0)
-		set_cylinder(trimed_line + 3, scene);
+	if (ft_strncmp(trimed_line, "A", 1) == 0 && ft_isspace(*(trimed_line + 1)))
+		parse_ambient(trimed_line + 2, scene);
+	if (ft_strncmp(trimed_line, "C", 1) == 0 && ft_isspace(*(trimed_line + 1)))
+		parse_camera(trimed_line + 2, scene);
+	if (ft_strncmp(trimed_line, "L", 1) == 0 && ft_isspace(*(trimed_line + 1)))
+		parse_light(trimed_line + 2, scene);
+	if (ft_strncmp(trimed_line, "pl", 2) == 0 && ft_isspace(*(trimed_line + 2)))
+		parse_plane(trimed_line + 3, scene);
+	if (ft_strncmp(trimed_line, "sp", 2) == 0 && ft_isspace(*(trimed_line + 2)))
+		parse_sphere(trimed_line + 3, scene);
+	if (ft_strncmp(trimed_line, "cy", 2) == 0 && ft_isspace(*(trimed_line + 2)))
+		parse_cylinder(trimed_line + 3, scene);
+}
+
+static void	scene_has_camera(t_scene *scene)
+{
+	if (scene->had_error)
+		return ;
+	if (!scene->camera_count)
+	{
+		scene->had_error = 1;
+		printf(RED"ERROR:\n"RESET);
+		printf(RED"\t|| Scene has no camera definiton."RESET);
+	}
 }
 
 int	is_parse_ok(char *file_name, t_scene *scene)
@@ -63,5 +75,6 @@ int	is_parse_ok(char *file_name, t_scene *scene)
 		}
 	}
 	close(fd);
-	return (1);
+	scene_has_camera(scene);
+	return (!scene->had_error);
 }

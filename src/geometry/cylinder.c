@@ -6,7 +6,7 @@
 /*   By: smoroz <smoroz@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:39:51 by smoroz            #+#    #+#             */
-/*   Updated: 2024/07/26 20:12:46 by smoroz           ###   ########.fr       */
+/*   Updated: 2024/07/30 14:56:31 by smoroz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	cylinder_print(void *cy)
 	vec3_print(&cylinder->pivot, "pivot");
 	vec3_print(&cylinder->axis, "axis");
 	vec3_print(&cylinder->color, "color");
-	printf(MAGENTA"  radius: "BLACK"%f\n", cylinder->radius);
-	printf(MAGENTA"  height: "BLACK"%f\n", cylinder->height);
+	printf(CYAN"  radius: "BLACK"%f\n", cylinder->radius);
+	printf(CYAN"  height: "BLACK"%f\n", cylinder->height);
 	printf(YELLOW"}\n"RESET);
 }
 
